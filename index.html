@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Extreme Hacker Matrix</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    font-family: monospace;
+  }
+
+  canvas {
+    display: block;
+  }
+
+  /* 상단 해킹 메시지 */
+  #hacked-msg {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+    color: red;
+    animation: blink 1s infinite;
+    z-index: 10;
+  }
+
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+  }
+
+  .emoji {
+    position: absolute;
+    animation: fade 2s forwards;
+    font-weight: bold;
+    z-index: 5;
+  }
+
+  @keyframes fade {
+    0% {opacity: 0; transform: scale(0.5);}
+    50% {opacity: 1; transform: scale(1.2);}
+    100% {opacity: 0; transform: scale(1);}
+  }
+
+  /* 하단 안내 문구 */
+  #notice {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.5); /* 투명한 흰색 */
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+<div id="hacked-msg">⚠️ YOU HAVE BEEN HACKED ⚠️</div>
+<div id="notice">이 사이트는 '실제가 아닙니다'</div>
+<canvas id="matrix"></canvas>
+
+<script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*😈👾';
+const fontSize = 20;
+const columns = Math.floor(canvas.width / fontSize);
+const drops = Array.from({length: columns}, () => Math.floor(Math.random() * canvas.height / fontSize));
+
+// MATRIX 글자 그리기
+function draw() {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = fontSize + 'px monospace';
+
+  drops.forEach((y, i) => {
+    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+    ctx.fillStyle = '#00FF00';
+    ctx.fillText(text, i * fontSize, y * fontSize);
+
+    // 글자 속도 랜덤으로 빠르게
+    drops[i] += Math.random() * 3 + 0.5;
+
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975){
+      drops[i] = 0;
+    }
+  });
+}
+
+setInterval(draw, 30);
+
+// 이모티콘 난무
+const emojis = ["LOL", "😈", "👾"];
+function showEmoji() {
+  const count = Math.floor(Math.random()*5)+3; // 한 번에 3~7개
+  for(let i=0; i<count; i++){
+    const emoji = document.createElement('div');
+    emoji.classList.add('emoji');
+    const e = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.textContent = e;
+    emoji.style.top = Math.random() * window.innerHeight + 'px';
+    emoji.style.left = Math.random() * window.innerWidth + 'px';
+    emoji.style.fontSize = 20 + Math.random() * 60 + 'px';
+    if (e === "LOL") emoji.style.color = 'yellow';
+    else emoji.style.color = '#00FF00';
+    document.body.appendChild(emoji);
+    setTimeout(() => document.body.removeChild(emoji), 2000 + Math.random() * 1000);
+  }
+}
+
+// 0.2~0.5초마다 이모티콘 난무
+setInterval(showEmoji, 200 + Math.random() * 300);
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
